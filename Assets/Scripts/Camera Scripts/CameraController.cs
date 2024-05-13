@@ -56,6 +56,7 @@ public class CameraController : MonoBehaviour
     }
 
     #region Camera Movement Methods
+
     private void MoveCamera()
     {
         //Taking in the input from the mouse
@@ -64,7 +65,29 @@ public class CameraController : MonoBehaviour
 
         //Gets the real rotation of the camera
         xRotation = xRotation - mouseY;
-        xRotation = Mathf.Clamp(xRotation, -30f, 90f);
+        xRotation = Mathf.Clamp(xRotation, -90f, 90f);
+
+        //Getting the horizontal rotations from mouse inputs
+        yRotation = yRotation + mouseX;
+
+        //Moves the camera around the player
+        transform.localRotation = Quaternion.Euler(Mathf.Clamp(xRotation, -90, 90), 0f, 0f);
+
+        //Rotates the player to always be facing the direction of the camera
+        playerCont.transform.localRotation = Quaternion.Euler(0f, yRotation, 0f);
+    }
+
+    #region Third Person Cam Methods
+
+    private void MoveCameraThirdPerson()
+    {
+        //Taking in the input from the mouse
+        float mouseX = Input.GetAxis("Mouse X") * sensitivity * Time.deltaTime;
+        float mouseY = Input.GetAxis("Mouse Y") * sensitivity * Time.deltaTime;
+
+        //Gets the real rotation of the camera
+        xRotation = xRotation - mouseY;
+        xRotation = Mathf.Clamp(xRotation, -90f, 90f);
 
         if (currentRadius < 0.5f)
             playerModel.GetComponent<SkinnedMeshRenderer>().enabled = false;
@@ -112,16 +135,16 @@ public class CameraController : MonoBehaviour
         Ray ray = new Ray(orig, dest);
 
         // Checks to see if the location is already overlapping with something
-        if 
+        if
         (
-            Physics.CheckBox(orig, colSize, transform.rotation, collideLayers) && 
+            Physics.CheckBox(orig, colSize, transform.rotation, collideLayers) &&
             Physics.Raycast(orig, dest + cam.transform.right * 0.3f, targetRadius, collideLayers)
         )
         {
             // Brings camera back to origin
             currentRadius = 0;
         }
-        else if(Physics.BoxCast(orig, colSize / 2, dest, out hit, transform.rotation, targetRadius, collideLayers))
+        else if (Physics.BoxCast(orig, colSize / 2, dest, out hit, transform.rotation, targetRadius, collideLayers))
         {
             //Checks the camera movement away from the origin + offset
             currentRadius = hit.distance;
@@ -136,6 +159,9 @@ public class CameraController : MonoBehaviour
 
         return ray.GetPoint(currentRadius);
     }
+
+    #endregion
+
     #endregion
 
     #region Get Methods
@@ -170,8 +196,7 @@ public class CameraController : MonoBehaviour
     }
     public Ray GetFurnitureMoveRay()
     {
-        Ray tempRay = new Ray(cam.transform.position, cam.transform.forward);
-        return new Ray(tempRay.GetPoint(currentRadius), tempRay.direction);
+        return new Ray(cam.transform.position, cam.transform.forward);
     }
     public Ray GetCameraSightRayOrigin()
     {
