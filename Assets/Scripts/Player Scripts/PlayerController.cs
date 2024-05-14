@@ -28,20 +28,6 @@ public class PlayerController : MonoBehaviour
     private Vector3 currentMove = Vector3.zero;
     private Vector2 mStore = Vector2.zero;
 
-    [Header("Player Attacks")]
-    public LayerMask attackLayers;
-    public float attackRange = 5;
-    public Vector3 attackArea = Vector3.zero;
-
-    public const float ATTACK_COOLDOWN = 0.5f;
-    private float currentAttackCoolDown = ATTACK_COOLDOWN;
-
-    [Space]
-    public ParticleSystem shootParticle;
-    public LayerMask shootCollideLayers;
-    public float shootDistance;
-    public const float SHOOT_COOLDOWN = 0.5f;
-    private float currentShootCoolDown = SHOOT_COOLDOWN;
     public const int RUBBER_BAND_MAX = 5;
     public int rubberBands { get; private set; } = RUBBER_BAND_MAX;
 
@@ -79,26 +65,6 @@ public class PlayerController : MonoBehaviour
         if (!GameController.isPaused)
         {
             Move();
-
-            if (Input.GetKeyDown(ValueStoreController.keyBinds.keyHit) && currentAttackCoolDown >= ATTACK_COOLDOWN)
-            {
-                Swing();
-                currentAttackCoolDown = 0;
-            }
-                
-            if (Input.GetKeyDown(ValueStoreController.keyBinds.keyShoot) && currentShootCoolDown >= SHOOT_COOLDOWN)
-            {
-                Shoot();
-                currentShootCoolDown = 0;
-            }
-
-            if (currentShootCoolDown < SHOOT_COOLDOWN)
-                currentShootCoolDown += Time.deltaTime;
-            if(currentAttackCoolDown < ATTACK_COOLDOWN)
-                currentAttackCoolDown += Time.deltaTime;
-
-            if (Input.GetKeyDown(ValueStoreController.keyBinds.keyDance))
-                anim.SetTrigger("dance");
         }
     }
 
@@ -176,48 +142,6 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void Swing()
-    {
-        anim.SetTrigger("swing");
-
-        Ray ray = camCont.GetCameraSightRayOrigin();
-
-        if (Physics.CheckBox(ray.GetPoint(attackRange / 2), attackArea, transform.rotation, attackLayers))
-        {
-            Collider[] col = Physics.OverlapBox(ray.GetPoint(attackRange / 2), attackArea, transform.rotation, attackLayers);
-            foreach(Collider c in col)
-            {
-                c.SendMessage("PlayerDamageSwing", SendMessageOptions.DontRequireReceiver);
-            }
-        }
-    }
-    private void Shoot()
-    {
-        if(rubberBands > 0)
-        {
-            anim.SetTrigger("shoot");
-
-            Ray ray = camCont.GetCameraSightRay();
-            RaycastHit hit;
-
-            shootParticle.Play();
-            SoundManager.PlaySound(SoundManager.pop);
-
-            if (Physics.Raycast(ray, out hit, shootDistance, shootCollideLayers))
-            {
-                if (MyFunctions.LayermaskContains(attackLayers, hit.collider.gameObject.layer))
-                {
-                    hit.collider.gameObject.SendMessage("PlayerDamageShoot", SendMessageOptions.DontRequireReceiver);
-                }
-            }
-
-            if(GameController.currentPhase == GameController.NightPhase.ATTACK)
-                rubberBands--;
-
-            InterfaceController.Instance.HUDBand();
-        }
-    }
-    
     public void BearAttack()
     {
         //Take an attack from the bear
