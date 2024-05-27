@@ -1,14 +1,14 @@
+using BehaviorTree;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
-public class NightmareSkeletonController : NightmareController
+public class NightmareSkeletonController : Nightmare
 {
     [Header("Unique Skeleton Characteristics")]
     public GameObject headObject;
     public Vector3 headSpawnOffset;
-    public float hitStunTime;
-    private float currentHitStunTimer;
 
     [Space]
     public GameObject headGameObject;
@@ -18,147 +18,46 @@ public class NightmareSkeletonController : NightmareController
     public GameObject headlessGameObject;
     public Animator headlessAnimator;
 
-    public PlayerController playerCont { get; private set; }
     private bool headOff = false;
     private GameObject head;
 
-    public override void StartOverrides()
+    public override void Initialize()
     {
-        spawnLocation = NightSpawnController.skeletonSpawnPosition;
-        head = Instantiate(headObject);
-        head.SendMessage("Initialize", this);
-        head.SetActive(false);
-        base.StartOverrides();
-
-        playerCont = FindObjectOfType<PlayerController>();
-    }
-    public override void SpawnSetup()
-    {
-        spawnLocation = NightSpawnController.skeletonSpawnPosition;
-        targetLocation = head.transform.position;
-
-        InterfaceController.Instance.HUDMessage("You hear bones rattling");
+        base.Initialize();
 
         headlessGameObject.SetActive(false);
-        headGameObject.SetActive(true);
 
-        SoundManager.PlayRandomSound(SoundManager.skeletonWalking);
-
-        base.SpawnSetup();
+        head = Instantiate(headObject);
+        head.GetComponent<NightmareSkeletonHeadController>().Initialize(this);
+        head.SetActive(false);
     }
-
-    #region Target Nodes
-    public override Node.Status TargetMove()
+    protected override Node SetupTree()
     {
-        // Will check if the head is on and then go to it if it is not
+        navAgent = GetComponent<NavMeshAgent>();
 
-        if (!headOff)
-            return Node.Status.SUCCESS;
-        else
-            return MoveToHead();
-    }
-    public override Node.Status TargetMoveDelay()
-    {
-        // If this head is off, make a delay after getting to the head
-
-        if (headOff)
+        // Establises the Behavior Tree and its logic
+        Node root = new Selector(new List<Node>()
         {
-            head.GetComponent<NightmareSkeletonHeadController>().Stop();
-            headlessAnimator.SetBool("headpickup", true);
-
-            Node.Status status = base.TargetMoveDelay();
-            
-            if(status == Node.Status.SUCCESS)
+            new Sequence(new List<Node>
             {
-                SetHeadOffStatus(false);
-                headlessAnimator.SetBool("headpickup", false);
-            }
-
-            return status;
-        }
-        else
-            return Node.Status.SUCCESS;
-    }
-    #endregion
-
-    #region Bed Nodes
-
-    public override Node.Status BedMove()
-    {
-        // Will go back to the target behavior if the head comes off
-
-        if (headOff)
-        {
-            behaviorTree.StartSequence("Target");
-            return Node.Status.RUNNING;
-        }
-        else
-        {
-            Node.Status status = base.BedMove();
-
-            if(status == Node.Status.SUCCESS)
+                new CheckPlayerInSight(this, PlayerController.playerInstances[0].gameObject.transform),
+                new TaskChasePlayer(transform, navAgent),
+                new CheckArea(this, PlayerController.playerInstances[0].gameObject.transform)
+            }),
+            new Sequence(new List<Node>
             {
-                headAnimator.SetBool("isBreaking", true);
-            }
+                new CheckHunger(this),
+                new TaskGoToTarget(transform, navAgent),
+                new TaskEat(this)
+            }),
+            new TaskPatrol(transform, NightmareSpawnController.Instance.skeletonPatrolPoints, navAgent)
+        });
 
-            return status;
-        }
+        root.SetData("speed", moveSpeed);
+
+        return root;
     }
 
-    #endregion
-
-    #region Retreat Nodes
-
-    public override Node.Status RetreatMove()
-    {
-        headAnimator.SetBool("isBreaking", false);
-
-        return TargetMove();
-    }
-    public override Node.Status RetreatMoveDelay()
-    {
-        return TargetMoveDelay();
-    }
-
-    #endregion
-
-    #region Spawn Nodes
-
-    public override Node.Status SpawnMove()
-    {
-        // Will go back to the retreat behavior if the head comes off
-
-        if (headOff)
-        {
-            behaviorTree.StartSequence("Retreat");
-            return Node.Status.RUNNING;
-        }
-        else
-            return base.SpawnMove();
-    }
-
-    #endregion
-
-    private Node.Status MoveToHead()
-    {
-        if (currentHitStunTimer > 0)
-        {
-            currentHitStunTimer -= Time.deltaTime;
-        }
-        else
-        {
-            currentHitStunTimer = -1;
-            navAgent.isStopped = false;
-
-            // Check to see if skeleton is at the head
-            if (MoveTo(head.transform.position) == Node.Status.SUCCESS)
-            {
-                return Node.Status.SUCCESS;
-            }
-        }
-
-        return Node.Status.RUNNING;
-    }
     private void SetHeadOffStatus(bool b)
     {
         if(b && !headOff)
@@ -167,20 +66,12 @@ public class NightmareSkeletonController : NightmareController
             head.GetComponent<Rigidbody>().isKinematic = false;
             head.transform.position = transform.position + headSpawnOffset;
 
-            head.GetComponent<Rigidbody>().AddForce(playerCont.transform.forward * 10, ForceMode.Force);
+            head.GetComponent<Rigidbody>().AddForce(PlayerController.playerInstances[0].transform.forward * 10, ForceMode.Force);
 
-            currentHitStunTimer = hitStunTime;
-            navAgent.isStopped = true;
             headOff = true;
 
             headlessGameObject.SetActive(true);
             headGameObject.SetActive(false);
-
-            if(behaviorTree.GetCurrentSequenceName() == "Bed")
-                behaviorTree.StartSequence("Target");
-            else if(behaviorTree.GetCurrentSequenceName() == "Spawn")
-                behaviorTree.StartSequence("Retreat");
-
         }
         else if(!b)
         {
@@ -206,15 +97,12 @@ public class NightmareSkeletonController : NightmareController
             SetHeadOffStatus(true);
         }
 
-        if (behaviorTree.GetCurrentSequenceName() == "Stun")
-            behaviorTree.StartSequence(bufferedSequence);
-
         base.PlayerDamageSwing();
     }
 
     public override bool CheckPath()
     {
-        targetLocation = playerCont.transform.position;
+        targetLocation = PlayerController.playerInstances[0].transform.position;
         return base.CheckPath();
     }
 }

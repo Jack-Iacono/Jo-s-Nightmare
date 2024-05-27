@@ -63,7 +63,7 @@ public class HUDScreenController : MonoBehaviour
             }
         }
 
-        timerFill.fillAmount = NightSpawnController.GetTimeRemainingPercent();
+        timerFill.fillAmount = NightmareSpawnController.GetTimeRemainingPercent();
     }
 
     public void SetupScreen()

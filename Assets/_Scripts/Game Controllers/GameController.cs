@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -17,13 +18,20 @@ public class GameController : MonoBehaviour
     public static int currentNightLights = MAX_NIGHT_LIGHTS;
     public static bool isPaused { get; private set; } = false;
 
-    private static List<NightmareController> nightmares = new List<NightmareController>();
+    private static List<Nightmare> nightmares = new List<Nightmare>();
     private static List<MonoBehaviour> phaseObservers = new List<MonoBehaviour>();
 
+    public static event EventHandler<bool> OnGamePause;
+
+    private void Awake()
+    {
+        if (Instance == null)
+            Instance = this;
+        else
+            Destroy(this);
+    }
     private void Start()
     {
-        Instance = this;
-
         currentNightLights = MAX_NIGHT_LIGHTS;
 
         if(!TutorialScreenController.tutorialActive)
@@ -76,6 +84,8 @@ public class GameController : MonoBehaviour
             Cursor.lockState = CursorLockMode.None;
         else
             Cursor.lockState = CursorLockMode.Locked;
+
+        OnGamePause?.Invoke(Instance, b);
 
         NotifyGamePause();
     }
@@ -140,7 +150,7 @@ public class GameController : MonoBehaviour
 
     public static void BroadcastToNightmares(string method)
     {
-        foreach(NightmareController n in nightmares)
+        foreach(Nightmare n in nightmares)
         {
             if(n)
             {
@@ -148,7 +158,7 @@ public class GameController : MonoBehaviour
             }
         }
     }
-    public static void RegisterNightmare(NightmareController n)
+    public static void RegisterNightmare(Nightmare n)
     {
         nightmares.Add(n);
     }

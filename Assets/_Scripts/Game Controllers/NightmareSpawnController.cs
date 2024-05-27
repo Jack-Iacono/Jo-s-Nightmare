@@ -2,35 +2,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NightSpawnController : MonoBehaviour
+public class NightmareSpawnController : MonoBehaviour
 {
     private const string nightmareIndexText = "\n0: Spider\n1: Bear\n2: Skeleton";
-    public static NightSpawnController Instance;
+    public static NightmareSpawnController Instance;
 
     [Header("NavAgent Locations")]
     public GameObject bedGameObject;
-    public static Vector3 bedPosition;
-    
-    public GameObject spiderSpawnGameObject;
-    public static Vector3 spiderSpawnPosition;
-    public List<GameObject> spiderPoints = new List<GameObject>();
-    private List<bool> validSpiderPoints = new List<bool>();
+    public Transform bedPosition;
 
-    public GameObject bearSpawnGameObject;
-    public static Vector3 bearSpawnPosition;
-
-    public GameObject skeletonSpawnGameObject;
-    public static Vector3 skeletonSpawnPosition;
-
-    [Header("Nightmare Objects")]
-    public GameObject spiderObject;
-    public GameObject bearObject;
+    [Header("Nightmare Skeleton")]
     public GameObject skeletonObject;
+    public Transform skeletonSpawn;
+    public Transform[] skeletonPatrolPoints;
 
     [Header("Spawning Variables")]
     [Tooltip("Time from beginning of night in seconds" + nightmareIndexText)]
-    public List<float> spiderSpawnDelays = new List<float>();
-    public List<float> bearSpawnDelays = new List<float>();
+    //public List<float> spiderSpawnDelays = new List<float>();
+    //public List<float> bearSpawnDelays = new List<float>();
     public List<float> skeletonSpawnDelays = new List<float>();
 
     private List<NightmareSpawnData> nightmares = new List<NightmareSpawnData>();
@@ -41,39 +30,26 @@ public class NightSpawnController : MonoBehaviour
 
     private string blockedNightmare;
 
+    private void Awake()
+    {
+        if (Instance == null)
+            Instance = this;
+        else
+            Destroy(this);
+    }
+
     private void Start()
     {
         GameController.UnregisterNightmares();
 
-        Instance = this;
         currentTime = 0.0f;
 
-        for (int i = 0; i < spiderPoints.Count; i++)
-        {
-            validSpiderPoints.Add(false);
-        }
-
         //Creates the nightmares and stores their data
-        for (int i = 0; i < spiderSpawnDelays.Count; i++)
-        {
-            spiderSpawnDelays[i] = RandomizeSpawnTimer(spiderSpawnDelays[i]);
-            nightmares.Add(new NightmareSpawnData(Instantiate(spiderObject), spiderSpawnDelays[i], false, NightmareSpawnData.nightmareType.SPIDER));
-        }
         for (int i = 0; i < skeletonSpawnDelays.Count; i++)
         {
             skeletonSpawnDelays[i] = RandomizeSpawnTimer(skeletonSpawnDelays[i]);
             nightmares.Add(new NightmareSpawnData(Instantiate(skeletonObject), skeletonSpawnDelays[i], false, NightmareSpawnData.nightmareType.SKELETON));
         }
-        for (int i = 0; i < bearSpawnDelays.Count; i++)
-        {
-            bearSpawnDelays[i] = RandomizeSpawnTimer(bearSpawnDelays[i]);
-            nightmares.Add(new NightmareSpawnData(Instantiate(bearObject), bearSpawnDelays[i], false, NightmareSpawnData.nightmareType.BEAR));
-        }
-
-        bedPosition = bedGameObject.transform.position;
-        spiderSpawnPosition = spiderSpawnGameObject.transform.position;
-        bearSpawnPosition = bearSpawnGameObject.transform.position;
-        skeletonSpawnPosition = skeletonSpawnGameObject.transform.position;
 
         for(int i = 0; i < nightmares.Count; i++)
         {
@@ -152,7 +128,7 @@ public class NightSpawnController : MonoBehaviour
         for(int i = 0; i < nightmares.Count; i++)
         {
             nightmares[i].nightmareObject.SetActive(true);
-            if (!nightmares[i].nightmareObject.GetComponent<NightmareController>().CheckPath())
+            if (!nightmares[i].nightmareObject.GetComponent<Nightmare>().CheckPath())
             {
                 // Will notify if the spider specifically has the issue
                 if (nightmares[i].GetType() == typeof(NightmareSpiderController).GetType())
@@ -176,38 +152,12 @@ public class NightSpawnController : MonoBehaviour
     public void SpawnNightmare(int i)
     {
         nightmares[i].nightmareObject.SetActive(true);
-        nightmares[i].nightmareObject.SendMessage("SpawnSetup");
+        nightmares[i].nightmareObject.SendMessage("Spawn");
         nightmares[i].isSpawned = true;
     }
     #endregion
 
     #region Get Methods
-    public Vector3 GetRandomSpiderPoint(Vector3 currentTarget)
-    {
-        List<Vector3> validTargets = new List<Vector3>();
-
-        for (int i = 0; i < spiderPoints.Count; i++)
-        {
-            if (spiderPoints[i].transform.position != currentTarget && validSpiderPoints[i])
-            {
-                validTargets.Add(spiderPoints[i].transform.position);
-            }
-        }
-
-        return validTargets[Random.Range(0, validTargets.Count)];
-    }
-
-    public List<NightmareBearController> GetBearObjects()
-    {
-        List<NightmareBearController> bearList = new List<NightmareBearController>();
-
-        for(int i = 0; i < nightmares.Count; i++)
-        {
-            if (nightmares[i].type == NightmareSpawnData.nightmareType.BEAR)
-                bearList.Add(nightmares[i].nightmareObject.GetComponent<NightmareBearController>());
-        }
-        return bearList;
-    }
 
     public static string GetTimeRemaining()
     {
@@ -217,14 +167,7 @@ public class NightSpawnController : MonoBehaviour
     {
         return (nightLength - currentTime) / nightLength;
     }
-    #endregion
-
-    #region Set Methods
-
-    public void SetSpiderPointValid(int i, bool b)
-    {
-        validSpiderPoints[i] = b;
-    }
 
     #endregion
+
 }

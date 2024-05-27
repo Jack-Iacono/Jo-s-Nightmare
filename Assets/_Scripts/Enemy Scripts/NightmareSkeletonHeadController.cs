@@ -13,14 +13,14 @@ public class NightmareSkeletonHeadController : MonoBehaviour
 
     private Vector3 velStore = Vector3.zero;
 
-    private void Initialize(NightmareSkeletonController b)
+    public void Initialize(NightmareSkeletonController b)
     {
         body = b;
         rb = GetComponent<Rigidbody>();
     }
     public void PlayerDamageSwing()
     {
-        rb.AddForce(body.playerCont.transform.forward * 10 + Vector3.up, ForceMode.Impulse);
+        rb.AddForce(PlayerController.playerInstances[0].transform.forward * 10 + Vector3.up, ForceMode.Impulse);
         SoundManager.PlayRandomSound(SoundManager.skeletonWalking);
     }
     public void Stop()

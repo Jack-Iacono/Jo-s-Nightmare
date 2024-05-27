@@ -15,7 +15,7 @@ public class AlarmClockController : InteractableController
     }
     public override void Interact()
     {
-        NightSpawnController.Instance.BeginNight();
+        NightmareSpawnController.Instance.BeginNight();
 
         particle.Stop();
 

@@ -6873,6 +6873,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 537680179}
   m_CullTransparentMesh: 1
+--- !u!4 &575000698 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1109229766857534942, guid: 0b8a11535fee9da45951cd568d3759d7, type: 3}
+  m_PrefabInstance: {fileID: 1890726972}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &599391294
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -19012,27 +19017,20 @@ MonoBehaviour:
   m_GameObject: {fileID: 1983313395}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7c07ce03171a87b40a8282f09b7f4a8b, type: 3}
+  m_Script: {fileID: 11500000, guid: aabe2d01238b44c4fabf139ba4f7b34c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   bedGameObject: {fileID: 797421539}
-  spiderSpawnGameObject: {fileID: 1186572399}
-  spiderPoints:
-  - {fileID: 207375422}
-  - {fileID: 1786213066}
-  - {fileID: 1576621241}
-  - {fileID: 423656797}
-  bearSpawnGameObject: {fileID: 117076521}
-  skeletonSpawnGameObject: {fileID: 1494155779}
-  spiderObject: {fileID: 3217738853245673950, guid: b4cbbd73559e2d2439427034cfadc7e8, type: 3}
-  bearObject: {fileID: 880221389467426089, guid: d7c7a9aa8f8c79245a4d83fc67f1375d, type: 3}
+  bedPosition: {fileID: 575000698}
   skeletonObject: {fileID: 4804478542066823569, guid: 7c6d58a3c6a05bf498acb210f67ed281, type: 3}
-  spiderSpawnDelays:
-  - 75
-  bearSpawnDelays:
-  - 150
+  skeletonSpawn: {fileID: 1494155782}
+  skeletonPatrolPoints:
+  - {fileID: 207375425}
+  - {fileID: 1786213069}
+  - {fileID: 1576621244}
+  - {fileID: 423656800}
   skeletonSpawnDelays:
-  - 15
+  - 0
 --- !u!82 &1983313400
 AudioSource:
   m_ObjectHideFlags: 0
