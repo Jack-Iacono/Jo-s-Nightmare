@@ -13,6 +13,8 @@ public class NightmareSkeletonHeadController : MonoBehaviour
 
     private Vector3 velStore = Vector3.zero;
 
+    private bool isMoving;
+
     public void Initialize(NightmareSkeletonController b)
     {
         body = b;
@@ -23,36 +25,50 @@ public class NightmareSkeletonHeadController : MonoBehaviour
         rb.AddForce(PlayerController.playerInstances[0].transform.forward * 10 + Vector3.up, ForceMode.Impulse);
         SoundManager.PlayRandomSound(SoundManager.skeletonWalking);
     }
-    public void Stop()
+
+    public void StopHead()
     {
-        rb.velocity = Vector3.zero;
+        rb.velocity = new Vector3(0, rb.velocity.y, 0);
         rb.angularVelocity = Vector3.zero;
+
+        isMoving = false;
+    }
+    public void StartHead()
+    {
+        gameObject.SetActive(true);
+        rb.isKinematic = false;
+        rb.AddForce(PlayerController.playerInstances[0].transform.forward * 10 + Vector3.up, ForceMode.Impulse);
+
+        isMoving = true;
     }
 
     private void Update()
     {
         if (!GameController.isPaused)
         {
-            //REstores Velocity after pause
-            if(velStore != Vector3.zero)
+            if (isMoving)
             {
-                rb.velocity = velStore;
-                velStore = Vector3.zero;
-                rb.useGravity = true;
-            }
+                //REstores Velocity after pause
+                if (velStore != Vector3.zero)
+                {
+                    rb.velocity = velStore;
+                    velStore = Vector3.zero;
+                    rb.useGravity = true;
+                }
 
-            if (currentHopTimer > 0)
-            {
-                currentHopTimer -= Time.deltaTime;
-            }
-            else
-            {
-                rb.AddForce
-                    (
-                        (body.transform.position - transform.position).normalized * 2 + Vector3.up * 2,
-                        ForceMode.Impulse
-                    );
-                currentHopTimer = hopSpeed;
+                if (currentHopTimer > 0)
+                {
+                    currentHopTimer -= Time.deltaTime;
+                }
+                else
+                {
+                    rb.AddForce
+                        (
+                            (body.transform.position - transform.position).normalized * 2 + Vector3.up * 2,
+                            ForceMode.Impulse
+                        );
+                    currentHopTimer = hopSpeed;
+                }
             }
         }
         else

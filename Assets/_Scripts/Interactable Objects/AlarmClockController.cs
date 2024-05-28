@@ -31,4 +31,12 @@ public class AlarmClockController : InteractableController
     {
         InteractPopUpController.EndPopup(gameObject);
     }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            NightmareSpawnController.Instance.BeginNight();
+        }
+    }
 }

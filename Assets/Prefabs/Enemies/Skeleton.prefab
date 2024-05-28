@@ -99,7 +99,7 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.5
+  m_Radius: 0.25
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
@@ -132,7 +132,7 @@ NavMeshAgent:
   m_Speed: 3.5
   m_Acceleration: 1000
   avoidancePriority: 50
-  m_AngularSpeed: 300
+  m_AngularSpeed: 600
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
@@ -154,20 +154,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 4
-  health: 100
-  targetDelay: 3
-  bedDelay: 1
-  retreatDelay: 5
-  spawnDelay: 1
-  stunDelay: 10
-  destinationDist: 1.5
+  fovRange: 10
   headObject: {fileID: 5328881980780443590, guid: a78f2abc5a29d5b4dba1a8bd0b36cd38, type: 3}
   headSpawnOffset: {x: 0, y: 1.25, z: 0.5}
-  hitStunTime: 3
   headGameObject: {fileID: 1477243876981196070}
   headAnimator: {fileID: 1442300934022550126}
   headlessGameObject: {fileID: 139284804558487485}
   headlessAnimator: {fileID: 3483916938382833860}
+  isHitStun: 0
 --- !u!1001 &3098563184604362480
 PrefabInstance:
   m_ObjectHideFlags: 0

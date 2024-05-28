@@ -28,9 +28,4 @@ public class NightmareBearController : Nightmare
         //Same thing as swing, ignore the stun
         PlayerDamageSwing();
     }
-
-    protected override Node SetupTree()
-    {
-        throw new System.NotImplementedException();
-    }
 }

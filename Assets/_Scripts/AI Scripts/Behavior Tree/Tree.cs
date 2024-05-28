@@ -2,16 +2,16 @@ using UnityEngine;
 
 namespace BehaviorTree
 {
-    public abstract class Tree: MonoBehaviour
+    public abstract class Tree
     {
-        private Node root = null;
+        public Node root = null;
 
-        protected void Start()
+        public void Initialize()
         {
             root = SetupTree();
         }
 
-        protected virtual void Update()
+        public virtual void UpdateTree(float dt)
         {
             // Evaluate the nodes
             if(root != null)

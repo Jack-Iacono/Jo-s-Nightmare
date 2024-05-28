@@ -21,7 +21,7 @@ public class CheckPlayerInSight : Node
             Ray ray = new Ray(user.transform.position, (player.position - user.transform.position).normalized);
 
             // Check if the player is within the vision arc
-            if (Vector3.Dot(user.transform.forward, ray.direction) >= 0.8)
+            if (Vector3.Dot(user.transform.forward, ray.direction) >= -0.1f)
             {
                 // Check if the player is behind any walls / obstructions
                 if (Physics.Raycast(ray.origin, ray.direction, out hit, user.fovRange))

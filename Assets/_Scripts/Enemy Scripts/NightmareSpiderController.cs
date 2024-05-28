@@ -13,9 +13,4 @@ public class NightmareSpiderController : Nightmare
 
     public float currentMoveDelay = 0;
     private ParticleSystem moveParticles;
-
-    protected override Node SetupTree()
-    {
-        throw new System.NotImplementedException();
-    }
 }

@@ -5,11 +5,11 @@ using UnityEngine.AI;
 using BehaviorTree;
 using UnityEditor.Timeline;
 
-public abstract class Nightmare : BehaviorTree.Tree
+public abstract class Nightmare : MonoBehaviour
 {
     [Header("Nightmare Characteristics")]
     [SerializeField]
-    protected float moveSpeed = 10;
+    public float moveSpeed = 10;
     public float fovRange = 10;
 
     [Header("NavMesh Objects")]
@@ -18,6 +18,8 @@ public abstract class Nightmare : BehaviorTree.Tree
 
     protected Vector3 spawnLocation;
     protected Vector3 targetLocation = Vector3.zero;
+
+    protected BehaviorTree.Tree currentTree;
 
     #region Initialization
 
@@ -39,16 +41,13 @@ public abstract class Nightmare : BehaviorTree.Tree
 
     #endregion
 
-    protected override void Update()
-    {
-        if (!GameController.isPaused)
-        {
-            base.Update();
-        }
-    }
-
     public virtual void PlayerDamageSwing() { }
     public virtual void PlayerDamageShoot() { }
+
+    protected virtual void Update()
+    {
+        currentTree.UpdateTree(Time.deltaTime);
+    }
 
     protected virtual void OnGamePause(object sender, bool e)
     {
