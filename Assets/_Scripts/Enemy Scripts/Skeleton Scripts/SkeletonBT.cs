@@ -30,7 +30,11 @@ public class SkeletonBT : BehaviorTree.Tree
             }),
             new Sequence(new List<Node>
             {
-                new CheckPlayerInSight(owner, PlayerController.playerInstances[0].gameObject.transform),
+                new CheckInAttackRange(PlayerController.playerInstances[0].transform, owner.transform, owner.attackRange, -0.1f)
+            }),
+            new Sequence(new List<Node>
+            {
+                new CheckPlayerInSight(owner, PlayerController.playerInstances[0].gameObject.transform, owner.fovRange, -0.4f),
                 new TaskChasePlayer(owner.transform, owner.navAgent),
                 new CheckArea(owner, PlayerController.playerInstances[0].gameObject.transform)
             }),

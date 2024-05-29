@@ -18,11 +18,12 @@ public class CheckSkeletonHead : Node
         if (owner.headOff)
         {
             ClearData("target");
+            ClearData("playerSightBuffer");
 
             status = Status.SUCCESS;
             return status;
         }
-
+        
         status = Status.FAILURE;
         return status;
     }

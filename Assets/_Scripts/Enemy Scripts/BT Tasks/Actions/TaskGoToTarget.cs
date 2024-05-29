@@ -22,7 +22,7 @@ public class TaskGoToTarget : Node
         Transform target = (Transform)GetData("target");
 
         // Check if the agent is still not at the target
-        if(Vector3.Distance(transform.position, target.position) > 0.5f)
+        if(Vector3.Distance(transform.position, target.position) > 1f)
         {
             navAgent.destination = target.position;
             status = Status.RUNNING;

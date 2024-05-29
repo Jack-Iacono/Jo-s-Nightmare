@@ -11,6 +11,7 @@ public abstract class Nightmare : MonoBehaviour
     [SerializeField]
     public float moveSpeed = 10;
     public float fovRange = 10;
+    public float attackRange = 2;
 
     [Header("NavMesh Objects")]
     [NonSerialized]

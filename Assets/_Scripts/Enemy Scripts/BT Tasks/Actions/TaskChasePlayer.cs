@@ -23,11 +23,13 @@ public class TaskChasePlayer : Node
         // Check if the agent is still not at the target
         if (Vector3.Distance(transform.position, target) > 0.5f)
         {
+            navAgent.speed = (float)GetData("speed") * 2;
             navAgent.destination = target;
             status = Status.RUNNING;
             return status;
         }
 
+        navAgent.speed = (float)GetData("speed");
         status = Status.SUCCESS;
         return status;
     }
