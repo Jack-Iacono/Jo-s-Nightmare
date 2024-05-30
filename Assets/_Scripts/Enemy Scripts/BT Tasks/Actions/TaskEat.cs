@@ -18,7 +18,7 @@ public class TaskEat : Node
         this.owner = owner;
     }
 
-    public override Status Check()
+    public override Status Check(float dt)
     {
         if (waiting)
         {

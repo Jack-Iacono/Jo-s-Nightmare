@@ -25,7 +25,7 @@ public class CheckPlayerInSight : Node
         playerSightTimer = playerSightTime;
     }
 
-    public override Status Check()
+    public override Status Check(float dt)
     {
         if (GetData(SIGHT_KEY) == null)
             parent.parent.SetData(SIGHT_KEY, false);

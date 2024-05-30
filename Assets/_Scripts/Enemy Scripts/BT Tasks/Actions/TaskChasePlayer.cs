@@ -15,7 +15,7 @@ public class TaskChasePlayer : Node
         this.navAgent = navAgent;
     }
 
-    public override Status Check()
+    public override Status Check(float dt)
     {
         // Get the current target node
         Vector3 target = (Vector3)GetData("playerKnownPosition");

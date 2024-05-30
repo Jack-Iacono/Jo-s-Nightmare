@@ -20,7 +20,7 @@ public class CheckArea : Node
         this.user = user;
     }
 
-    public override Status Check()
+    public override Status Check(float dt)
     {
         if (waiting)
         {

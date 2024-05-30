@@ -23,7 +23,7 @@ public class TaskPatrol : Node
         this.waypoints = waypoints;
         this.navAgent = navAgent;
     }
-    public override Status Check()
+    public override Status Check(float dt)
     {
         // check if the agent is waiting
         if (waiting)

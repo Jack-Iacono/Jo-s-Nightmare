@@ -20,7 +20,7 @@ public class NightmareSkeletonController : Nightmare
     public GameObject headlessGameObject;
     public Animator headlessAnimator;
 
-    protected BehaviorTree.Tree behaviorTree;
+    protected SkeletonBT behaviorTree;
 
     private TimerManager timerManager = new TimerManager();
     private Timer headPickupTimer;
@@ -100,6 +100,7 @@ public class NightmareSkeletonController : Nightmare
         {
             SoundManager.PlayRandomSound(SoundManager.skeletonWalking);
             SetHeadOffStatus(true);
+            behaviorTree.SetValue("playerKnownPosition", PlayerController.playerInstances[0].transform.position);
         }
 
         base.PlayerDamageSwing();

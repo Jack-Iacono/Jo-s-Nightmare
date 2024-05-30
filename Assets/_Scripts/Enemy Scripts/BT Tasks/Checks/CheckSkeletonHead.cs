@@ -13,7 +13,7 @@ public class CheckSkeletonHead : Node
         this.owner = owner;
     }
 
-    public override Status Check()
+    public override Status Check(float dt)
     {
         if (owner.headOff)
         {

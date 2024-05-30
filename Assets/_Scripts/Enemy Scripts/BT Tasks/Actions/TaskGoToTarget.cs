@@ -16,7 +16,7 @@ public class TaskGoToTarget : Node
         this.navAgent = navAgent;
     }
 
-    public override Status Check()
+    public override Status Check(float dt)
     {
         // Get the current target node
         Transform target = (Transform)GetData("target");

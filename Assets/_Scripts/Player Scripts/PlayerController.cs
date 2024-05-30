@@ -158,18 +158,9 @@ public class PlayerController : MonoBehaviour
         charCont.Move(currentMove * Time.deltaTime);
     }
 
-    public void BearAttack()
+    public void MeleeHit()
     {
-        //Take an attack from the bear
-        StartCoroutine(BearAttackStun());
-    }
-    IEnumerator BearAttackStun()
-    {
-        bearStunMod = bearStunSpeed;
-
-        yield return new WaitForSeconds(bearStunTime);
-
-        bearStunMod = 1;
+        SoundManager.PlaySound(SoundManager.skeletonWalking[0]);
     }
 
     private void OnDestroy()

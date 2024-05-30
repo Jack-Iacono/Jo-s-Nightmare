@@ -30,7 +30,8 @@ public class SkeletonBT : BehaviorTree.Tree
             }),
             new Sequence(new List<Node>
             {
-                new CheckInAttackRange(PlayerController.playerInstances[0].transform, owner.transform, owner.attackRange, -0.1f)
+                new CheckInAttackRange(PlayerController.playerInstances[0].transform, owner.transform, owner.attackRange, -0.1f),
+                new TaskAttackPlayer("attacking", 1, PlayerController.playerInstances[0], owner)
             }),
             new Sequence(new List<Node>
             {
@@ -46,4 +47,8 @@ public class SkeletonBT : BehaviorTree.Tree
         return root;
     }
 
+    public void SetValue(string key, object value)
+    {
+        root.SetData(key, value);
+    }
 }

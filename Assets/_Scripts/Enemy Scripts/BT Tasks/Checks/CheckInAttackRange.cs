@@ -19,20 +19,27 @@ public class CheckInAttackRange : Node
         this.sightAngle = sightAngle;
     }
 
-    public override Status Check()
+    public override Status Check(float dt)
     {
+        // If the player is currently attacking, bypass this check
+        if (GetData("attacking") != null && (bool)GetData("attacking"))
+        {
+            status = Status.SUCCESS;
+            return status;
+        }
+
         // Check if the player is close enough to the user
         if (Vector3.Distance(target.position, transform.position) <= attackRange)
         {
             // Check if the player is within the vision arc
             if (Vector3.Dot(transform.forward, (target.position - transform.position).normalized) >= sightAngle)
             {
-                Debug.Log("Attack");
-
                 status = Status.SUCCESS;
                 return status;
             }
         }
+
+        ClearData("attacking");
 
         // If the enemy can't see the player and there is no known last position, then it is  a failure
         status = Status.FAILURE;

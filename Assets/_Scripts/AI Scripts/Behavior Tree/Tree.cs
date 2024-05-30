@@ -16,7 +16,7 @@ namespace BehaviorTree
             // Evaluate the nodes
             if(root != null)
             {
-                root.Check();
+                root.Check(dt);
             }
         }
 

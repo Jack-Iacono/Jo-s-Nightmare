@@ -11,11 +11,11 @@ namespace BehaviorTree
         public Selector() : base() { }
         public Selector(List<Node> children) : base(children) { }
 
-        public override Status Check()
+        public override Status Check(float dt)
         {
             foreach (Node node in children)
             {
-                switch (node.Check())
+                switch (node.Check(dt))
                 {
                     case Status.FAILURE:
                         continue;

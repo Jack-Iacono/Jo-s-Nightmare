@@ -35,7 +35,7 @@ namespace BehaviorTree
             children.Add(child);
         }
 
-        public virtual Status Check() => Status.FAILURE;
+        public virtual Status Check(float dt) => Status.FAILURE;
 
         public void SetData(string key, object value)
         {

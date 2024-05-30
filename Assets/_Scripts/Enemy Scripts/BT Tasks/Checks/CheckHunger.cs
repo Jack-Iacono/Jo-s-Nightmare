@@ -13,7 +13,7 @@ public class CheckHunger : Node
         this.owner = owner;
     }
 
-    public override Status Check()
+    public override Status Check(float dt)
     {
         /*
         // Check if the owner of this node is hungry

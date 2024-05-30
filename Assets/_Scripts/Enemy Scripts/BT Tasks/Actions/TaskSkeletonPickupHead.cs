@@ -15,8 +15,6 @@ public class TaskSkeletonPickupHead : Node
     private float waitTime = 1f;
     private float waitTimer = 1f;
 
-    private bool waiting = false;
-
     public TaskSkeletonPickupHead(NightmareSkeletonController owner, NavMeshAgent navAgent, NightmareSkeletonHeadController headController)
     {
         this.owner = owner;
@@ -24,7 +22,7 @@ public class TaskSkeletonPickupHead : Node
         this.headController = headController;
     }
 
-    public override Status Check()
+    public override Status Check(float dt)
     {
         if (GetData("pickingUp") == null)
             parent.SetData("pickingUp", false);
