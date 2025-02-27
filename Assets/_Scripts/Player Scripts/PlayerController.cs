@@ -67,6 +67,11 @@ public class PlayerController : MonoBehaviour
 
     private CharacterController charCont;
 
+    private void Awake()
+    {
+        playerInstances.Add(this);
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -79,8 +84,6 @@ public class PlayerController : MonoBehaviour
             meshRend = meshOverride;
         else
             meshRend = GetComponent<MeshRenderer>();
-
-        playerInstances.Add(this);
     }
 
     // Update is called once per frame

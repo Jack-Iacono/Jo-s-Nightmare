@@ -10,7 +10,7 @@ public abstract class Nightmare : MonoBehaviour
     [Header("Nightmare Characteristics")]
     [SerializeField]
     public float moveSpeed = 10;
-    public float fovRange = 10;
+    public float fovRange = 30;
     public float attackRange = 2;
 
     [Header("NavMesh Objects")]
